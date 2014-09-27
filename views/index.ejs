@@ -1,0 +1,21 @@
+<% layout('layout') %>
+
+<form action="/shorten" charset="utf-8" method="post">
+  <input type="text" name="url" />
+  <input type="submit" value="shorten" />
+</form>
+
+<ul>
+  <li>
+    <strong class="url">URL</strong>
+    <strong class="code">Code</strong>
+  </li>
+<% for (url in urlMap) { %>
+  <li>
+    <span class="url"><%= url %></span>
+    <a href="http://localhost:3155/<%= urlMap[url] %>" class="code"><%= urlMap[url] %></a>
+  </li>
+<% } %>
+</ul>
+
+<script src="/javascripts/show-link.js"></script>
