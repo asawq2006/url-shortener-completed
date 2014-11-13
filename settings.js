@@ -1,20 +1,18 @@
 var utils = require('./lib/utils');
-var ejsEngine = require('ejs-locals');
+var ejs = require('ejs');
 
 /**
  * Sets up the given express application.
  *
  * @param app - the express application
  * @param express - the express library
- * @param nconf - the configuration settings
  */
-module.exports = function(app, express, nconf) {
+module.exports = function(app, express) {
   app.configure(function(){
-    app.engine('ejs', ejsEngine);
-
     app.set('views', __dirname + '/views');
     app.set('view engine', 'ejs');
     app.set('view options', { layout: false });
+    app.engine('html', ejs.renderFile);
 
     app.use(express.bodyParser());
     app.use(express.methodOverride());

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Shorten Me Maybe?</title>
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,700,300,600">
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+
+  <body>
+    <div id="top-bar"></div>
+
+    <div id="wrapper">
+      <h1>Shorten Me Maybe?</h1>
+
+      <form id="add-short-code-form" action="/shorten" method="post">
+        <input type="text" name="url" />
+        <input type="submit" value="shorten" />
+      </form>
+
+      <ul></ul>
+
+      <script id="short-codes-template" type="text/x-handlebars-template">
+        <li>
+          <strong class="url">URL</strong>
+          <strong class="code">Code</strong>
+        </li>
+
+        {{#each shortCodes}}
+          <li>
+            <span class="url">{{ url }}</span>
+            <a href="http://localhost:3155/?code={{ code }}" class="code">{{ code }}</a>
+          </li>
+        {{/each}}
+      </script>
+
+      <script src="/js/lib/handlebars.js"></script>
+      <script src="/js/script.js"></script>
+    </div>
+  </body>
+</html>

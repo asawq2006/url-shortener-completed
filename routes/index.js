@@ -4,36 +4,50 @@ var shortener = require('../lib/shortener');
  * Creates the routes for the given express application.
  *
  * @param app - the express application
- * @param nconf - the configuration settings
  */
-module.exports = function(app, nconf) {
+module.exports = function(app) {
   app.get('/', function(request, response) {
-    shortener.getShortenedURLs(function(urlMap) {
-      response.render('index', { urlMap: urlMap });
-    });
-  });
-
-  app.get('/:code', function(request, response) {
-    var code = request.params.code;
-
-    shortener.expandCode(code, function(url) {
-      if (url) {
-        response.redirect(url);
-      } else {
-        response.redirect('/');
-      }
-    });
-  });
-
-  app.post('/shorten', function(request, response) {
-    var url = request.body.url;
-
-    if (url) {
-      shortener.shortenURL(url, function(code) {
-        response.redirect('/');
+    if (request.query.code) {
+      shortener.expandCode(request.query.code, function(error, url) {
+        if (error || !url) {
+          response.redirect('/');
+        } else {
+          response.redirect(url);
+        }
       });
     } else {
-      response.redirect('/');
+      response.render('index.html'); 
     }
   });
+
+  app.get('/short-codes', function(request, response) {
+    sendShortCodes(response);
+  });
+
+  app.post('/short-codes', function(request, response) {
+    var url = request.body.url;
+    if (!url) {
+      response.send(422, 'Must provide url parameter.');
+      return;
+    }
+
+    shortener.shortenURL(url, function(error, code) {
+      if (error) {
+        throw error;
+      }
+
+      sendShortCodes(response);
+    });
+  });
+
+  /* Fetches the short codes from MongoDB and sends them to the client. */
+  function sendShortCodes(response) {
+    shortener.getShortCodes(function(error, shortCodes) {
+      if (error) {
+        throw error;
+      }
+
+      response.json(200, shortCodes);
+    });
+  }
 };
